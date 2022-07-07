@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="id" name="keyboard" />
+    <item type="id" name="what" />
+    <item type="id" name="pytorch" />
+</resources>
