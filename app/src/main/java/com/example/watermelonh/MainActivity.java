@@ -8,16 +8,22 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 import android.view.View;
 
@@ -50,6 +56,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 import java.util.jar.Pack200;
 
 public class MainActivity extends AppCompatActivity {
@@ -61,7 +70,10 @@ public class MainActivity extends AppCompatActivity {
 
     public static String result;
     public static Bitmap bitmap;
+    public static Bitmap imageBitmap;
     public static Uri contentUri;
+    public static Intent data;
+    public static File imageDir;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -81,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         Module module = null;
         InputStream iStream;
+        InputStream imageStream;
         try {
             // creating bitmap from packaged into app android asset 'image.jpg',
             // app/src/main/assets/image.jpg
@@ -88,6 +101,9 @@ public class MainActivity extends AppCompatActivity {
 
             iStream = getAssets().open("image.jpg");
             bitmap = BitmapFactory.decodeStream(iStream);
+
+            imageStream = getAssets().open("watermelon_t.jpg");
+            imageBitmap = BitmapFactory.decodeStream(imageStream);
 
             // loading serialized torchscript module from packaged into app android asset model.pt,
             // app/src/model/assets/model.pt
@@ -104,18 +120,18 @@ public class MainActivity extends AppCompatActivity {
         //if permissions are not allowed, do something
         //debugging purposes
         if (ContextCompat.checkSelfPermission(MainActivity.this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                Manifest.permission.READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             //permissions are acting funny
             Log.e("Permissions", "permissions are not enabled");
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                    Manifest.permission.READ_EXTERNAL_STORAGE)) {
             }
             else {
             // No explanation needed; request the permission
             ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
                     100);
             }
         }
@@ -124,19 +140,25 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            File imageDir = new File(getExternalFilesDir(null), "Watermelon_Images");
+            imageDir = new File(getExternalFilesDir(null), "Watermelon_Images");
             //File newFile = new File(imageDir, "default_image.jpg");
-            contentUri = FileProvider.getUriForFile(this,
-                    getApplicationContext().getPackageName() + ".provider",
-                    imageDir);
-            grantUriPermission(    imageDir.getPath(),
-                    contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            grantUriPermission(    imageDir.getPath(),
-                    contentUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            contentUri = createUri(imageDir);
 
+            data = new Intent(Intent.ACTION_QUICK_VIEW);
+            data.setDataAndType(contentUri, "resource/folder");
 
-            Log.e("path",imageDir.getPath());
+            data.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            data.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
+            List<ResolveInfo> resInfoList = getPackageManager().queryIntentActivities(data, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                grantUriPermission(packageName, contentUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+
+            String rootPath = imageDir.getAbsolutePath();
+
+            Log.e("path",rootPath);
 
             if (!imageDir.exists()) {
                 imageDir.mkdirs();
@@ -152,7 +174,11 @@ public class MainActivity extends AppCompatActivity {
             else if (imageDir.exists()) {
                 Log.e("Directory","directory already created");
             }
+
+            saveFile(imageBitmap,"/watermelon_t",imageDir);
+
         }
+
         catch (SecurityException e) {
             Log.e("Directory", "No directory created", e);
             finish();
@@ -204,10 +230,89 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        try {
+            trimCache(this);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+
+    public static void trimCache(Context context) {
+        try {
+            File dir = context.getCacheDir();
+            if (dir != null && dir.isDirectory()) {
+                deleteDir(dir);
+            }
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+    }
+
+    public static boolean deleteDir(File dir) {
+        if (dir != null && dir.isDirectory()) {
+            String[] children = dir.list();
+            for (int i = 0; i < children.length; i++) {
+                boolean success = deleteDir(new File(dir, children[i]));
+                if (!success) {
+                    return false;
+                }
+            }
+        }
+
+        // The directory is now empty so delete it
+        return dir.delete();
+    }
+
+    public Uri createUri(File file) {
+        Uri uri = FileProvider.getUriForFile(this,
+                getApplicationContext().getPackageName() + ".provider",
+                file);
+        return uri;
+    }
+
+    static String currentPhotoPath;
+
+    public static File saveToFile() throws IOException {
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timestamp + "_";
+
+        File image = File.createTempFile(imageFileName,".jpg",imageDir);
+
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    private void saveFile(Bitmap imageToSave, String fileName, File parent) {
+
+        File file = new File(parent.getAbsolutePath(), fileName);
+        if (file.exists()) {
+            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+
+            ImageView myImage = (ImageView) findViewById(R.id.mouse);
+
+            myImage.setImageBitmap(myBitmap);
+        }
+
+        Log.e("Image created",file.getPath());
+
+        try {
+            FileOutputStream out = new FileOutputStream(file);
+            imageToSave.compress(Bitmap.CompressFormat.JPEG, 100, out);
+            out.flush();
+            out.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public static String pytorchTensor(Bitmap bitmap, Module module) {

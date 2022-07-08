@@ -3,18 +3,28 @@ package com.example.watermelonh;
 import static android.app.Activity.RESULT_OK;
 
 import static com.example.watermelonh.MainActivity.contentUri;
+import static com.example.watermelonh.MainActivity.data;
+import static com.example.watermelonh.MainActivity.imageDir;
+import static com.example.watermelonh.MainActivity.saveToFile;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Instrumentation;
 import android.content.ComponentName;
+import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,6 +36,9 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -35,11 +48,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Objects;
 
 public class FirstFragment extends Fragment  {
 
     private FragmentFirstBinding binding;
-    private MainActivity MainActivity;
 
     @Override
     public View onCreateView(
@@ -59,8 +78,6 @@ public class FirstFragment extends Fragment  {
 
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 
-
-
         if (getArguments() != null) {
             String text = getArguments().getString("className", "No Input Given");
             byte[] byteArray = getArguments().getByteArray("classByteArray");
@@ -70,20 +87,11 @@ public class FirstFragment extends Fragment  {
             imageView.setImageBitmap(bitmap);
         }
 
-
-
         binding.buttonFirst.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);
-            }
-        });
-
-        binding.camButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                openCamera(intent);
             }
         });
 
@@ -99,18 +107,18 @@ public class FirstFragment extends Fragment  {
             }
         });
 
+        binding.camButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activityResultLauncher.launch(intent);
+            }
+        });
+
         binding.upload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //open folder containing images
-                Intent data = new Intent(Intent.ACTION_QUICK_VIEW);
-
-                data.setDataAndType(contentUri, "file/*");
-                data.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                data.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-
-                activityResultLauncher.launch(data);
-
+                startActivity(data);
             }
         });
     }
@@ -125,13 +133,6 @@ public class FirstFragment extends Fragment  {
         startActivity(intent);
     }
 
-    private void openGallery() {
-
-        Intent intentGallery = new Intent(Intent.ACTION_GET_CONTENT);
-        intentGallery.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        startActivity(intentGallery);
-
-    }
 
     public static FirstFragment newInstance(String text, Bitmap bitmap) {
         FirstFragment firstFragment = new FirstFragment();
