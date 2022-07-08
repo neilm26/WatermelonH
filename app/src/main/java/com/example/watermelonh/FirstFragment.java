@@ -2,8 +2,11 @@ package com.example.watermelonh;
 
 import static android.app.Activity.RESULT_OK;
 
+import static com.example.watermelonh.MainActivity.contentUri;
+
 import android.annotation.SuppressLint;
 import android.app.Instrumentation;
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -100,10 +103,14 @@ public class FirstFragment extends Fragment  {
             @Override
             public void onClick(View view) {
                 //open folder containing images
+                Intent data = new Intent(Intent.ACTION_QUICK_VIEW);
 
-                Intent data = new Intent(Intent.ACTION_PICK);
-                data.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI); //to be changed or not?
+                data.setDataAndType(contentUri, "file/*");
+                data.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                data.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
                 activityResultLauncher.launch(data);
+
             }
         });
     }

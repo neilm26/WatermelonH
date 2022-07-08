@@ -1,10 +1,16 @@
 package com.example.watermelonh;
 
+import static java.security.AccessController.getContext;
+
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.snackbar.Snackbar;
@@ -15,6 +21,10 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.content.PackageManagerCompat;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -40,6 +50,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.jar.Pack200;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -50,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
     public static String result;
     public static Bitmap bitmap;
+    public static Uri contentUri;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -82,24 +94,62 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Success,", "Loading input image");
 
             module = LiteModuleLoader.load(assetFilePath(this, "model.pt"));
-
             Log.d("Success,", "Loading model");
         } catch (IOException e) {
             Log.e("PytorchHelloWorld", "Error reading assets", e);
             finish();
         }
 
-        try {
-            File imageDir = new File(Environment.getExternalStorageDirectory()+"/Watermelon_Images");
-            Log.e("path",imageDir.getPath());
-            if (imageDir.exists()) {
+        //give permissions before making temp directory
+        //if permissions are not allowed, do something
+        //debugging purposes
+        if (ContextCompat.checkSelfPermission(MainActivity.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            //permissions are acting funny
+            Log.e("Permissions", "permissions are not enabled");
 
-                if (imageDir.mkdir()) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            }
+            else {
+            // No explanation needed; request the permission
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    100);
+            }
+        }
+        else {
+            //permission granted, something else is fucking up the imageDir creation
+        }
+
+        try {
+            File imageDir = new File(getExternalFilesDir(null), "Watermelon_Images");
+            //File newFile = new File(imageDir, "default_image.jpg");
+            contentUri = FileProvider.getUriForFile(this,
+                    getApplicationContext().getPackageName() + ".provider",
+                    imageDir);
+            grantUriPermission(    imageDir.getPath(),
+                    contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            grantUriPermission(    imageDir.getPath(),
+                    contentUri, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+
+
+            Log.e("path",imageDir.getPath());
+
+
+            if (!imageDir.exists()) {
+                imageDir.mkdirs();
+                Log.e("Directory", "to be created");
+                if (imageDir.mkdirs()) {
                     Log.e("Directory","directory created");
+                }
+                else {
+                    Log.e("Directory","failed. Directory not created");
                 }
             }
 
-            else {
+            else if (imageDir.exists()) {
                 Log.e("Directory","directory already created");
             }
         }
@@ -115,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
         // showing className on UI
 //      EditText textView = (EditText) findViewById(R.id.pytorch);
 //      textView.setText(className);
+
+        //gthbtkn: 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
 
         result = pytorchTensor(bitmap,module);
 
