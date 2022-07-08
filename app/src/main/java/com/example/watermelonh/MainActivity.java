@@ -2,6 +2,7 @@ package com.example.watermelonh;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.os.Environment;
 import android.util.Log;
 import android.view.View;
 
@@ -23,6 +25,7 @@ import com.example.watermelonh.databinding.ActivityMainBinding;
 
 import android.view.Menu;
 import android.view.MenuItem;
+import android.webkit.ValueCallback;
 import android.widget.ImageView;
 
 import org.pytorch.IValue;
@@ -42,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
+
+    private final static int FILECHOOSER_RESULTCODE=1;
 
     public static String result;
     public static Bitmap bitmap;
@@ -81,6 +86,25 @@ public class MainActivity extends AppCompatActivity {
             Log.d("Success,", "Loading model");
         } catch (IOException e) {
             Log.e("PytorchHelloWorld", "Error reading assets", e);
+            finish();
+        }
+
+        try {
+            File imageDir = new File(Environment.getExternalStorageDirectory()+"/Watermelon_Images");
+            Log.e("path",imageDir.getPath());
+            if (imageDir.exists()) {
+
+                if (imageDir.mkdir()) {
+                    Log.e("Directory","directory created");
+                }
+            }
+
+            else {
+                Log.e("Directory","directory already created");
+            }
+        }
+        catch (SecurityException e) {
+            Log.e("Directory", "No directory created", e);
             finish();
         }
 
@@ -133,22 +157,6 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, appBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
-//    private static String findMostAccurate(Tensor outputTensor) {
-//
-//        final float[] scores = outputTensor.getDataAsFloatArray();
-//
-//        float maxScore = -Float.MAX_VALUE; //why such a large number?
-//        int maxScoreIndex = -1;
-//
-//        for (int index = 0; index < scores.length; index++) {
-//            if (scores[index] > maxScore) {
-//                maxScore = scores[index];
-//                maxScoreIndex = index;
-//            }
-//        }
-//        return ImageNetClassesMine.IMAGENET_CLASSES[maxScoreIndex];
-//    }
 
     public static String pytorchTensor(Bitmap bitmap, Module module) {
         // preparing input tensor

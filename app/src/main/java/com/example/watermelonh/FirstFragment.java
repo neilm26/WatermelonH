@@ -1,23 +1,34 @@
 package com.example.watermelonh;
 
+import static android.app.Activity.RESULT_OK;
+
 import android.annotation.SuppressLint;
+import android.app.Instrumentation;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.media.Image;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.watermelonh.databinding.FragmentFirstBinding;
+
+import org.jetbrains.annotations.Nullable;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -25,7 +36,7 @@ import java.io.File;
 public class FirstFragment extends Fragment  {
 
     private FragmentFirstBinding binding;
-
+    private MainActivity MainActivity;
 
     @Override
     public View onCreateView(
@@ -37,12 +48,14 @@ public class FirstFragment extends Fragment  {
         return binding.getRoot();
 
     }
-    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        TextView content = (TextView) view.findViewById(R.id.pytorch);
-        ImageView imageView = (ImageView) view.findViewById(R.id.keyboard);
+    public void onViewCreated(@NonNull View fragmentView, Bundle savedInstanceState) {
+        super.onViewCreated(fragmentView, savedInstanceState);
+        TextView content = (TextView) fragmentView.findViewById(R.id.pytorch);
+        ImageView imageView = (ImageView) fragmentView.findViewById(R.id.keyboard);
+        ImageView sideOfWatermelon = (ImageView) fragmentView.findViewById(R.id.mouse);
 
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+
 
 
         if (getArguments() != null) {
@@ -71,11 +84,26 @@ public class FirstFragment extends Fragment  {
             }
         });
 
+        ActivityResultLauncher activityResultLauncher = registerForActivityResult(new
+                ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if(result.getResultCode() == RESULT_OK && result.getData() != null){
+                    Bundle bundle = result.getData().getExtras();
+                    Bitmap bitmap = (Bitmap) bundle.get("data");
+                    sideOfWatermelon.setImageBitmap(bitmap);
+                }
+            }
+        });
+
         binding.upload.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("SdCardPath")
             @Override
             public void onClick(View view) {
-                openFolder(Environment.getExternalStorageState(new File("/sdcard/Pictures")));
+                //open folder containing images
+
+                Intent data = new Intent(Intent.ACTION_PICK);
+                data.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI); //to be changed or not?
+                activityResultLauncher.launch(data);
             }
         });
     }
@@ -90,12 +118,12 @@ public class FirstFragment extends Fragment  {
         startActivity(intent);
     }
 
-    private void openFolder(String path) {
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        Uri mydir = Uri.parse("file://"+path);
-        intent.setDataAndType(mydir,"application/*");    // or use */*
-        startActivity(intent);
+    private void openGallery() {
+
+        Intent intentGallery = new Intent(Intent.ACTION_GET_CONTENT);
+        intentGallery.setData(MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivity(intentGallery);
+
     }
 
     public static FirstFragment newInstance(String text, Bitmap bitmap) {
