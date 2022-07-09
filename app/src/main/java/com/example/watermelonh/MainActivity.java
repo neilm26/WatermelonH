@@ -71,8 +71,6 @@ public class MainActivity extends AppCompatActivity {
     public static String result;
     public static Bitmap bitmap;
     public static Bitmap imageBitmap;
-    public static Uri contentUri;
-    public static Intent data;
     public static File imageDir;
 
     @SuppressLint("SetTextI18n")
@@ -142,9 +140,9 @@ public class MainActivity extends AppCompatActivity {
         try {
             imageDir = new File(getExternalFilesDir(null), "Watermelon_Images");
             //File newFile = new File(imageDir, "default_image.jpg");
-            contentUri = createUri(imageDir);
+            Uri contentUri = createUri(imageDir);
 
-            data = new Intent(Intent.ACTION_QUICK_VIEW);
+            Intent data = new Intent(Intent.ACTION_QUICK_VIEW);
             data.setDataAndType(contentUri, "resource/folder");
 
             data.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -273,18 +271,6 @@ public class MainActivity extends AppCompatActivity {
         return uri;
     }
 
-    static String currentPhotoPath;
-
-    public static File saveToFile() throws IOException {
-        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-        String imageFileName = "JPEG_" + timestamp + "_";
-
-        File image = File.createTempFile(imageFileName,".jpg",imageDir);
-
-        currentPhotoPath = image.getAbsolutePath();
-        return image;
-    }
-
     @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
@@ -296,13 +282,8 @@ public class MainActivity extends AppCompatActivity {
 
         File file = new File(parent.getAbsolutePath(), fileName);
         if (file.exists()) {
-            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
-
-            ImageView myImage = (ImageView) findViewById(R.id.mouse);
-
-            myImage.setImageBitmap(myBitmap);
+            Log.e("Image creating",file.getPath());
         }
-
         Log.e("Image created",file.getPath());
 
         try {
