@@ -46,6 +46,14 @@ public class SecondFragment extends Fragment {
                 fragmentTransaction.commit(); //Git push and commit lol
             }
         });
+
+        binding.buttonSecond.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(SecondFragment.this)
+                        .navigate(R.id.action_SecondFragment_to_ThirdFragment);
+            }
+        });
     }
 
     @Override
