@@ -61,6 +61,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.jar.Pack200;
 
+//Main app, previous app was to test various functions.
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
