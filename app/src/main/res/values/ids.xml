@@ -3,4 +3,5 @@
     <item type="id" name="keyboard" />
     <item type="id" name="what" />
     <item type="id" name="pytorch" />
+    <item type="id" name="testing" />
 </resources>

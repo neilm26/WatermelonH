@@ -9,8 +9,11 @@
     <string name="previous">Previous</string>
     <string name="cam_button_text">Open Camera</string>
 
-    <string name="upload_image">Upload Image</string>
-    <string name="clear_upload">Clear</string>
+    <string name="open_camera">Open Camera</string>
+    <string name="return_to_start">Restart From Scratch</string>
+
+    <string name="confirm">Yes</string>
+    <string name="decline">No</string>
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>

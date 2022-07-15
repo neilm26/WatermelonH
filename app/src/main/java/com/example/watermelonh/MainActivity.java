@@ -1,10 +1,8 @@
 package com.example.watermelonh;
 
-import static java.security.AccessController.getContext;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,26 +10,17 @@ import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.RequiresApi;
+import androidx.activity.result.ActivityResult;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.renderscript.ScriptGroup;
 import android.util.Log;
-import android.view.View;
+
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
-import androidx.core.content.PackageManagerCompat;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
@@ -39,9 +28,6 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.watermelonh.databinding.ActivityMainBinding;
 
-import android.view.Menu;
-import android.view.MenuItem;
-import android.webkit.ValueCallback;
 import android.widget.ImageView;
 
 import org.pytorch.IValue;
@@ -51,6 +37,7 @@ import org.pytorch.Module;
 import org.pytorch.Tensor;
 import org.pytorch.torchvision.TensorImageUtils;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -59,20 +46,16 @@ import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.jar.Pack200;
+
+import static com.example.watermelonh.Constants.*;
+
+
 
 //Main app, previous app was to test various functions.
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration appBarConfiguration;
     private ActivityMainBinding binding;
-
-    private final static int FILECHOOSER_RESULTCODE=1;
-
-    public static String result;
-    public static Bitmap bitmap;
-    public static Bitmap imageBitmap;
-    public static File imageDir;
 
     @SuppressLint("SetTextI18n")
     @Override
@@ -90,28 +73,23 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
-        Module module = null;
-        InputStream iStream;
-        InputStream imageStream;
+
         try {
-            // creating bitmap from packaged into app android asset 'image.jpg',
-            // app/src/main/assets/image.jpg
+            //load side and front watermelon examples
             Log.d("PytorchHelloWorld", "Loading input image");
 
-            iStream = getAssets().open("image.jpg");
-            bitmap = BitmapFactory.decodeStream(iStream);
+            InputStream imageStreamSide = getAssets().open("watermelon_t.jpg");
+            imageBitmap = BitmapFactory.decodeStream(imageStreamSide);
 
-            imageStream = getAssets().open("watermelon_t.jpg");
-            imageBitmap = BitmapFactory.decodeStream(imageStream);
-
-            // loading serialized torchscript module from packaged into app android asset model.pt,
-            // app/src/model/assets/model.pt
-            Log.d("Success,", "Loading input image");
+            Log.d("Success,", "Loading second input image");
+            InputStream imageStreamFront = getAssets().open("watermelon_f.jpg");
+            imageBitmapFront = BitmapFactory.decodeStream(imageStreamFront);
 
             module = LiteModuleLoader.load(assetFilePath(this, "model.pt"));
             Log.d("Success,", "Loading model");
+
         } catch (IOException e) {
-            Log.e("PytorchHelloWorld", "Error reading assets", e);
+            Log.e("IOException", "Error reading assets", e);
             finish();
         }
 
@@ -126,15 +104,13 @@ public class MainActivity extends AppCompatActivity {
 
             if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
                     Manifest.permission.READ_EXTERNAL_STORAGE)) {
+            } else {
+                // No explanation needed; request the permission
+                ActivityCompat.requestPermissions(MainActivity.this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        100);
             }
-            else {
-            // No explanation needed; request the permission
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                    100);
-            }
-        }
-        else {
+        } else {
             //permission granted, something else is fucking up the imageDir creation
         }
 
@@ -157,75 +133,36 @@ public class MainActivity extends AppCompatActivity {
 
             String rootPath = imageDir.getAbsolutePath();
 
-            Log.e("path",rootPath);
+            Log.e("path", rootPath);
 
             if (!imageDir.exists()) {
                 imageDir.mkdirs();
                 Log.e("Directory", "to be created");
                 if (imageDir.mkdirs()) {
-                    Log.e("Directory","directory created");
+                    Log.e("Directory", "directory created");
+                } else {
+                    Log.e("Directory", "failed. Directory not created");
                 }
-                else {
-                    Log.e("Directory","failed. Directory not created");
-                }
+            } else if (imageDir.exists()) {
+                Log.e("Directory", "directory already created");
             }
 
-            else if (imageDir.exists()) {
-                Log.e("Directory","directory already created");
-            }
+            saveFile(imageBitmap, "/watermelon_t", imageDir);
+            saveFile(imageBitmapFront,"/watermelon_f",imageDir);
 
-            saveFile(imageBitmap,"/watermelon_t",imageDir);
-
-        }
-
-        catch (SecurityException e) {
+        } catch (SecurityException e) {
             Log.e("Directory", "No directory created", e);
             finish();
         }
 
 
-
         // showing image on UI
+        ImageView sideOfWatermelon = (ImageView) findViewById(R.id.mouse);
 
-        // showing className on UI
-//      EditText textView = (EditText) findViewById(R.id.pytorch);
-//      textView.setText(className);
+        sideOfWatermelon.setImageBitmap(imageBitmap);
 
         //gthbtkn: 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
 
-        result = pytorchTensor(bitmap,module);
-
-
-        binding.fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -270,13 +207,6 @@ public class MainActivity extends AppCompatActivity {
                 getApplicationContext().getPackageName() + ".provider",
                 file);
         return uri;
-    }
-
-    @Override
-    public boolean onSupportNavigateUp() {
-        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_content_main);
-        return NavigationUI.navigateUp(navController, appBarConfiguration)
-                || super.onSupportNavigateUp();
     }
 
     private void saveFile(Bitmap imageToSave, String fileName, File parent) {
@@ -338,5 +268,49 @@ public class MainActivity extends AppCompatActivity {
             }
             return file.getAbsolutePath();
         }
+    }
+
+    String currentPhotoPath;
+
+    private File saveToFile() throws IOException {
+        String timestamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timestamp + "_" + ".jpg";
+
+        File image = new File(imageDir,imageFileName);
+
+        currentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+    public Bitmap saveFileFromCamera(ActivityResult result) {
+
+        Bitmap savedBitmap = null;
+
+        if(result.getResultCode() == RESULT_OK && result.getData() != null){
+            Bundle bundle = result.getData().getExtras();
+            Bitmap bitmap = (Bitmap) bundle.get("data");
+
+            try {
+                File tempFile = saveToFile();
+
+                Log.e("file path",currentPhotoPath);
+
+                ByteArrayOutputStream outStream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG,90,outStream);
+
+                byte[] bitmapData = outStream.toByteArray();
+                FileOutputStream fileOutStream = new FileOutputStream(tempFile);
+
+                fileOutStream.write(bitmapData);
+                fileOutStream.flush();
+                fileOutStream.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            savedBitmap = bitmap;
+        }
+        return savedBitmap;
     }
 }
