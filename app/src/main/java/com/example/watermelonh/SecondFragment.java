@@ -4,7 +4,6 @@ package com.example.watermelonh;
 import static com.example.watermelonh.Constants.*;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.watermelonh.databinding.FragmentSecondBinding;
@@ -24,6 +22,7 @@ import java.io.ByteArrayOutputStream;
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;
+    private MainActivity mainActivity = new MainActivity();
 
     @Override
     public View onCreateView(
@@ -40,9 +39,9 @@ public class SecondFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
 
         TextView content = (TextView) view.findViewById(R.id.testing);
-        ImageView imageView = (ImageView) view.findViewById(R.id.watermelon_side);
+        ImageView imageView = (ImageView) view.findViewById(R.id.watermelon_front1);
 
-        result = MainActivity.pytorchTensor(imageBitmap,module);
+        result = mainActivity.pytorchTensor(imageBitmap,module);
 
         imageView.setImageBitmap(imageBitmap);
 

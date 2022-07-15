@@ -79,11 +79,11 @@ public class MainActivity extends AppCompatActivity {
             Log.d("PytorchHelloWorld", "Loading input image");
 
             InputStream imageStreamSide = getAssets().open("watermelon_t.jpg");
-            imageBitmap = BitmapFactory.decodeStream(imageStreamSide);
+            originalBitmapSide = BitmapFactory.decodeStream(imageStreamSide);
 
             Log.d("Success,", "Loading second input image");
             InputStream imageStreamFront = getAssets().open("watermelon_f.jpg");
-            imageBitmapFront = BitmapFactory.decodeStream(imageStreamFront);
+            originalBitmapFront = BitmapFactory.decodeStream(imageStreamFront);
 
             module = LiteModuleLoader.load(assetFilePath(this, "model.pt"));
             Log.d("Success,", "Loading model");
@@ -159,7 +159,7 @@ public class MainActivity extends AppCompatActivity {
         // showing image on UI
         ImageView sideOfWatermelon = (ImageView) findViewById(R.id.mouse);
 
-        sideOfWatermelon.setImageBitmap(imageBitmap);
+        sideOfWatermelon.setImageBitmap(originalBitmapSide);
 
         //gthbtkn: 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
 
@@ -227,7 +227,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public static String pytorchTensor(Bitmap bitmap, Module module) {
+    public String pytorchTensor(Bitmap bitmap, Module module) {
         // preparing input tensor
         final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
                 TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);

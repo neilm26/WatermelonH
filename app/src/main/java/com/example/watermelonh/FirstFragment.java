@@ -53,7 +53,7 @@ public class FirstFragment extends Fragment  {
 
         ImageView sideOfWatermelon = (ImageView) fragmentView.findViewById(R.id.mouse);
 
-        sideOfWatermelon.setImageBitmap(imageBitmap);
+        sideOfWatermelon.setImageBitmap(originalBitmapSide);
 
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
 
