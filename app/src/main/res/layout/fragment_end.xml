@@ -27,7 +27,7 @@
         <ImageView
             android:id="@+id/front"
             android:layout_width="169dp"
-            android:layout_height="169"
+            android:layout_height="169dp"
             android:scaleType="fitXY"
             android:src="@drawable/ic_launcher_background"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -39,8 +39,8 @@
 
         <ImageView
             android:id="@+id/side"
-            android:layout_width="169"
-            android:layout_height="169"
+            android:layout_width="169dp"
+            android:layout_height="169dp"
             android:scaleType="fitXY"
             android:src="@drawable/ic_launcher_background"
             app:layout_constraintBottom_toBottomOf="parent"
