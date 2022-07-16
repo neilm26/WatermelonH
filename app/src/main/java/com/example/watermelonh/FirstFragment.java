@@ -63,15 +63,8 @@ public class FirstFragment extends Fragment  {
             @Override
             public void onActivityResult(ActivityResult result) {
 
-                  imageBitmap = mainActivity.saveFileFromCamera(result);
+                imageBitmap = mainActivity.saveFileFromCamera(result);
 
-//                MainActivity.result = MainActivity.pytorchTensor(savedBitmap,module);
-//
-//                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-//                FirstFragment firstFragment = FirstFragment.newInstance(MainActivity.result,savedBitmap);
-//                fragmentTransaction.replace(R.id.side_text, firstFragment);
-//
-//                fragmentTransaction.commit(); //Git push and commit lol
 
                 NavHostFragment.findNavController(FirstFragment.this)
                         .navigate(R.id.action_FirstFragment_to_SecondFragment);

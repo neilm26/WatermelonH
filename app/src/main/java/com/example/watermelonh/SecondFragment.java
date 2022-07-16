@@ -45,22 +45,6 @@ public class SecondFragment extends Fragment {
 
         imageView.setImageBitmap(imageBitmap);
 
-//        FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-//
-//        SecondFragment secondFragment = SecondFragment.newInstance(MainActivity.result,savedBitmap);
-//        fragmentTransaction.replace(R.id.testing, secondFragment);
-//
-//        fragmentTransaction.commit(); //Git push and commit lol
-//
-//        if (getArguments()!=null) {
-//            String text = getArguments().getString("className", "No Input Given");
-//            byte[] byteArray = getArguments().getByteArray("classByteArray");
-//            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-//
-//            content.setText(text);
-//            imageView.setImageBitmap(bitmap);
-//        }
-
         binding.declineImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

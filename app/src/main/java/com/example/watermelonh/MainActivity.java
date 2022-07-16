@@ -241,9 +241,10 @@ public class MainActivity extends AppCompatActivity {
         // searching for the index with maximum score
         float maxScore = -Float.MAX_VALUE;
         int maxScoreIdx = -1;
-        for (int i = 0; i < scores.length; i++) {
+        for (int i = 0; i < ImageNetClassesMine.IMAGENET_CLASSES.length; i++) {
             if (scores[i] > maxScore) {
                 maxScore = scores[i];
+                Log.d("score", String.valueOf(maxScore));
                 maxScoreIdx = i;
             }
         }
