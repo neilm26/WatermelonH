@@ -1,23 +1,28 @@
 package com.example.watermelonh;
 
-import static com.example.watermelonh.MainActivity.bitmap;
-import static com.example.watermelonh.MainActivity.result;
 
+import static com.example.watermelonh.Constants.*;
+
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.fragment.NavHostFragment;
 
 import com.example.watermelonh.databinding.FragmentSecondBinding;
 
+import java.io.ByteArrayOutputStream;
+
 public class SecondFragment extends Fragment {
 
     private FragmentSecondBinding binding;
+    private MainActivity mainActivity = new MainActivity();
 
     @Override
     public View onCreateView(
@@ -33,17 +38,27 @@ public class SecondFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonNext.setOnClickListener(new View.OnClickListener() {
+        TextView content = (TextView) view.findViewById(R.id.testing);
+        ImageView imageView = (ImageView) view.findViewById(R.id.watermelon_front1);
+
+        result = mainActivity.pytorchTensor(imageBitmap,module);
+
+        imageView.setImageBitmap(imageBitmap);
+
+        binding.declineImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 NavHostFragment.findNavController(SecondFragment.this)
                         .navigate(R.id.action_SecondFragment_to_FirstFragment);
 
-                FragmentTransaction fragmentTransaction = getParentFragmentManager().beginTransaction();
-                FirstFragment firstFragment = FirstFragment.newInstance(result,bitmap);
+            }
+        });
 
-                fragmentTransaction.replace(R.id.side_text, firstFragment);
-                fragmentTransaction.commit(); //Git push and commit lol
+        binding.confirmImg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NavHostFragment.findNavController(SecondFragment.this)
+                        .navigate(R.id.action_SecondFragment_to_ThirdFragment);
             }
         });
     }
@@ -52,6 +67,22 @@ public class SecondFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         binding = null;
+    }
+
+    public static SecondFragment newInstance(String text, Bitmap bitmap) {
+        SecondFragment secondFragment = new SecondFragment();
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+        byte[] byteArray = stream.toByteArray();
+
+        Bundle args = new Bundle();
+
+        args.putString("className",text);
+        args.putByteArray("classByteArray",byteArray);
+
+        secondFragment.setArguments(args);
+
+        return secondFragment;
     }
 
 }
