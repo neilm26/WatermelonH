@@ -2,13 +2,13 @@ package com.example.watermelonh;
 
 public class ImageNetClassesFirst {
     public static String[] IMAGENET_CLASSES = new String[]{
-            "tench, Tinca tinca",
-            "goldfish, Carassius auratus",
+            "Watermelon, melon",
+            "Watermelon, melon",
             "great white shark, white shark, man-eater, man-eating shark, Carcharodon carcharias",
             "tiger shark, Galeocerdo cuvieri",
             "hammerhead, hammerhead shark",
             "electric ray, crampfish, numbfish, torpedo",
-            "stingray",
+            "Watermelon, melon",
             "cock",
             "hen",
             "ostrich, Struthio camelus",
@@ -18,7 +18,7 @@ public class ImageNetClassesFirst {
             "junco, snowbird",
             "indigo bunting, indigo finch, indigo bird, Passerina cyanea",
             "robin, American robin, Turdus migratorius",
-            "bulbul",
+            "Watermelon, melon",
             "jay",
             "magpie",
             "chickadee",
