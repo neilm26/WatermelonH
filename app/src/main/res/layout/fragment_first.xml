@@ -43,29 +43,13 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="40dp"
         android:fontFamily="@font/mukta_semibold"
-        android:text="Tasty Watermelon Identifier v0.5\nHow to use this application: "
+        android:text="Tasty Watermelon Identifier v0.5\nHow to use this application: \nTake pictures of your target watermelon\n at angles prompted by the camera app"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="343dp"
-        android:layout_height="64dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/mukta_semibold"
-        android:text="Take pictures of the different angles of the watermelon when prompted to by the camera app"
-        android:textAlignment="center"
-        android:textAllCaps="false"
-        android:textColor="@color/white"
-        app:layout_constraintBottom_toTopOf="@+id/mouse"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
