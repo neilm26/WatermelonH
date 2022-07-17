@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             originalBitmapFront = BitmapFactory.decodeStream(imageStreamFront);
 
             module = LiteModuleLoader.load(assetFilePath(this, "globalmodel.pt"));
-            watermelonModule = LiteModuleLoader.load(assetFilePath(this, "model.ptl"));
+            watermelonModule = LiteModuleLoader.load(assetFilePath(this, "brokmodel.ptl"));
             Log.d("Success,", "Loading model");
 
         } catch (IOException e) {
@@ -261,9 +261,7 @@ public class MainActivity extends AppCompatActivity {
                 TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
 
         // running the model
-        //IValue ivalue = module.forward(IValue.from(inputTensor));
         final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
-
 
 
         // getting tensor content as java array of floats
@@ -289,7 +287,6 @@ public class MainActivity extends AppCompatActivity {
                 TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
 
         // running the model
-        //final Tensor outputTensor = (Tensor) module.forward(IValue.from(inputTensor)).toTensor();
         IValue ivalue = module.forward(IValue.from(inputTensor));
         IValue[] outputTuple = ivalue.toTuple();
         final Tensor outputTensor = outputTuple[0].toTensor();
@@ -301,7 +298,7 @@ public class MainActivity extends AppCompatActivity {
         // searching for the index with maximum score
         float maxScore = -Float.MAX_VALUE;
         int maxScoreIdx = -1;
-        for (int i = 0; i < scores.length; i++) {
+        for (int i = 0; i < ImageNetClassesMine.IMAGENET_CLASSES.length; i++) {
             if (scores[i] > maxScore) {
                 maxScore = scores[i];
                 Log.d("score", String.valueOf(maxScore));
