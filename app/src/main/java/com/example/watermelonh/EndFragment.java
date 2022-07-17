@@ -2,6 +2,7 @@ package com.example.watermelonh;
 
 import static com.example.watermelonh.Constants.*;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.media.Image;
 import android.os.Bundle;
 
@@ -13,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -48,6 +50,12 @@ public class EndFragment extends Fragment {
         front.setImageBitmap(imageBitmapFront);
 
         String avgValue = "Watermelon: " + String.valueOf((sideQuality+frontQuality)/2) + "%" + " Good";
+
+        FrameLayout frameLayout = view.findViewById(R.id.fragEnd);
+        AnimationDrawable animationDrawable4 = (AnimationDrawable) frameLayout.getBackground();
+        animationDrawable4.setEnterFadeDuration(2000);
+        animationDrawable4.setExitFadeDuration(4000);
+        animationDrawable4.start();
 
 
         if (result.equals("Watermelon, melon") && resultFront.equals("Watermelon, melon")) {

@@ -5,9 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@drawable/bg_grad_list"
-    android:id="@+id/act_man">
+    tools:context=".MainActivity">
 
 
     <com.google.android.material.appbar.AppBarLayout
