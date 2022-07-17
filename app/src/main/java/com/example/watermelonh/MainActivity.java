@@ -84,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
             originalBitmapFront = BitmapFactory.decodeStream(imageStreamFront);
 
             module = LiteModuleLoader.load(assetFilePath(this, "globalmodel.pt"));
-            watermelonModule = LiteModuleLoader.load(assetFilePath(this, "model.ptl"));
+            watermelonModule = LiteModuleLoader.load(assetFilePath(this, "brokmodel.ptl"));
             Log.d("Success,", "Loading model");
 
         } catch (IOException e) {
