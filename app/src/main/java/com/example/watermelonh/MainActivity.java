@@ -23,7 +23,6 @@ import android.util.Log;
 
 
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -37,6 +36,7 @@ import com.example.watermelonh.databinding.ActivityMainBinding;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import org.pytorch.IValue;
@@ -94,11 +94,12 @@ public class MainActivity extends AppCompatActivity {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
-        CoordinatorLayout constraintLayout = findViewById(R.id.act_man);
+        ConstraintLayout constraintLayout = findViewById(R.id.side_text);
         AnimationDrawable animationDrawable = (AnimationDrawable) constraintLayout.getBackground();
-        animationDrawable.setEnterFadeDuration(200);
-        animationDrawable.setExitFadeDuration(400);
+        animationDrawable.setEnterFadeDuration(2000);
+        animationDrawable.setExitFadeDuration(4000);
         animationDrawable.start();
+
 
         try {
             //load side and front watermelon examples
@@ -260,7 +261,10 @@ public class MainActivity extends AppCompatActivity {
                 TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
 
         // running the model
-        final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
+        IValue ivalue = module.forward(IValue.from(inputTensor));
+        IValue[] outputTuple = ivalue.toTuple();
+        final Tensor outputTensor = outputTuple[0].toTensor();
+
 
         // getting tensor content as java array of floats
         final float[] scores = outputTensor.getDataAsFloatArray();

@@ -13,6 +13,7 @@
     <color name="gradient_4">#10BD64</color>
     <color name="gradient_5">#9155E4</color>
     <color name="gradient_6">#DA7A31</color>
-    <color name="persimmon">#FFFF3939</color>
+    <color name="persimmonDA">#DAFF3939</color>
     <color name="transparent">#00FFFFFF</color>
+    <color name="dark_green">#FF0D301F</color>
 </resources>
