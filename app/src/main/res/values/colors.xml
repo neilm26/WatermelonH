@@ -14,4 +14,5 @@
     <color name="gradient_5">#9155E4</color>
     <color name="gradient_6">#DA7A31</color>
     <color name="persimmon">#FFFF3939</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>
