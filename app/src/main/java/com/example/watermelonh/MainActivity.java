@@ -101,6 +101,14 @@ public class MainActivity extends AppCompatActivity {
         animationDrawable.start();
 
 
+
+
+
+
+
+
+
+
         try {
             //load side and front watermelon examples
             Log.d("PytorchHelloWorld", "Loading input image");
