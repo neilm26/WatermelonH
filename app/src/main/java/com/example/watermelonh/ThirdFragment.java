@@ -3,6 +3,7 @@ package com.example.watermelonh;
 import static com.example.watermelonh.Constants.*;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -10,6 +11,7 @@ import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -43,6 +45,12 @@ public class ThirdFragment extends Fragment {
         frontOfWatermelon.setImageBitmap(originalBitmapFront);
 
         Intent intent = new Intent("android.media.action.IMAGE_CAPTURE");
+
+        ConstraintLayout constraintLayout2 = view.findViewById(R.id.frag3);
+        AnimationDrawable animationDrawable2 = (AnimationDrawable) constraintLayout2.getBackground();
+        animationDrawable2.setEnterFadeDuration(2000);
+        animationDrawable2.setExitFadeDuration(4000);
+        animationDrawable2.start();
 
 
         binding.buttonNext2.setOnClickListener(new View.OnClickListener() {

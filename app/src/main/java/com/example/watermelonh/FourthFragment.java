@@ -9,6 +9,7 @@ import static com.example.watermelonh.Constants.resultFront;
 import static com.example.watermelonh.Constants.sideQuality;
 import static com.example.watermelonh.Constants.watermelonModule;
 
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -49,6 +51,15 @@ public class FourthFragment extends Fragment {
 
 
         imageView.setImageBitmap(imageBitmapFront);
+
+        /*
+        ConstraintLayout constraintLayout3 = view.findViewById(R.id.frag4);
+        AnimationDrawable animationDrawable3 = (AnimationDrawable) constraintLayout3.getBackground();
+        animationDrawable3.setEnterFadeDuration(2000);
+        animationDrawable3.setExitFadeDuration(4000);
+        animationDrawable3.start();
+        */
+
 
         binding.declineImg.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -4,6 +4,7 @@ package com.example.watermelonh;
 import static com.example.watermelonh.Constants.*;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.fragment.NavHostFragment;
 
@@ -36,6 +38,13 @@ public class SecondFragment extends Fragment {
     }
 
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+
+        ConstraintLayout constraintLayout1 = view.findViewById(R.id.frag2);
+        AnimationDrawable animationDrawable1 = (AnimationDrawable) constraintLayout1.getBackground();
+        animationDrawable1.setEnterFadeDuration(2000);
+        animationDrawable1.setExitFadeDuration(4000);
+        animationDrawable1.start();
+
         super.onViewCreated(view, savedInstanceState);
 
         TextView content = (TextView) view.findViewById(R.id.testing);
