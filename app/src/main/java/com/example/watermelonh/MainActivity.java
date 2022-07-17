@@ -3,13 +3,17 @@ package com.example.watermelonh;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.AnimationDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResult;
@@ -18,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.util.Log;
 
 
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
@@ -28,6 +33,10 @@ import androidx.navigation.ui.NavigationUI;
 
 import com.example.watermelonh.databinding.ActivityMainBinding;
 
+import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import org.pytorch.IValue;
@@ -48,8 +57,6 @@ import java.util.Date;
 import java.util.List;
 
 import static com.example.watermelonh.Constants.*;
-
-
 
 //Main app, previous app was to test various functions.
 public class MainActivity extends AppCompatActivity {
@@ -73,6 +80,26 @@ public class MainActivity extends AppCompatActivity {
         appBarConfiguration = new AppBarConfiguration.Builder(navController.getGraph()).build();
         NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
 
+        getSupportActionBar().hide();
+
+        if (Build.VERSION.SDK_INT >= 19 && Build.VERSION.SDK_INT < 21) {
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
+        }
+        if (Build.VERSION.SDK_INT >= 19) {
+            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
+        }
+
+        if (Build.VERSION.SDK_INT >= 21) {
+            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+        }
+
+        ConstraintLayout constraintLayout = findViewById(R.id.side_text);
+        AnimationDrawable animationDrawable = (AnimationDrawable) constraintLayout.getBackground();
+        animationDrawable.setEnterFadeDuration(2000);
+        animationDrawable.setExitFadeDuration(4000);
+        animationDrawable.start();
+
 
         try {
             //load side and front watermelon examples
@@ -85,7 +112,8 @@ public class MainActivity extends AppCompatActivity {
             InputStream imageStreamFront = getAssets().open("watermelon_f.jpg");
             originalBitmapFront = BitmapFactory.decodeStream(imageStreamFront);
 
-            module = LiteModuleLoader.load(assetFilePath(this, "model.pt"));
+            module = LiteModuleLoader.load(assetFilePath(this, "globalmodel.pt"));
+            watermelonModule = LiteModuleLoader.load(assetFilePath(this, "brokmodel.ptl"));
             Log.d("Success,", "Loading model");
 
         } catch (IOException e) {
@@ -233,10 +261,38 @@ public class MainActivity extends AppCompatActivity {
                 TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
 
         // running the model
-        final Tensor outputTensor = module.forward(IValue.from(inputTensor)).toTensor();
+        IValue ivalue = module.forward(IValue.from(inputTensor));
+        IValue[] outputTuple = ivalue.toTuple();
+        final Tensor outputTensor = outputTuple[0].toTensor();
+
 
         // getting tensor content as java array of floats
         final float[] scores = outputTensor.getDataAsFloatArray();
+
+        // searching for the index with maximum score
+        float maxScore = -Float.MAX_VALUE;
+        int maxScoreIdx = -1;
+        for (int i = 0; i < ImageNetClassesMine.IMAGENET_CLASSES.length; i++) {
+            if (scores[i] > maxScore) {
+                maxScore = scores[i];
+                Log.d("score", String.valueOf(maxScore));
+                maxScoreIdx = i;
+            }
+        }
+
+        return com.example.watermelonh.ImageNetClassesFirst.IMAGENET_CLASSES[maxScoreIdx];
+    }
+
+    public int pytorchTensorWatermelon(Bitmap bitmap, Module module) {
+        // preparing input tensor
+        final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
+                TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
+
+        // running the model
+        //final Tensor outputTensor = (Tensor) module.forward(IValue.from(inputTensor)).toTensor();
+
+        // getting tensor content as java array of floats
+        final float[] scores = IValue.from(inputTensor).toTensor().getDataAsFloatArray();
 
         // searching for the index with maximum score
         float maxScore = -Float.MAX_VALUE;
@@ -313,5 +369,15 @@ public class MainActivity extends AppCompatActivity {
             savedBitmap = bitmap;
         }
         return savedBitmap;
+    }
+    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
+        Window win = activity.getWindow();
+        WindowManager.LayoutParams winParams = win.getAttributes();
+        if (on) {
+            winParams.flags |= bits;
+        } else {
+            winParams.flags &= ~bits;
+        }
+        win.setAttributes(winParams);
     }
 }

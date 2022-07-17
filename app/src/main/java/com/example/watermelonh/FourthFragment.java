@@ -1,10 +1,13 @@
 package com.example.watermelonh;
 
+import static com.example.watermelonh.Constants.frontQuality;
 import static com.example.watermelonh.Constants.imageBitmap;
 import static com.example.watermelonh.Constants.imageBitmapFront;
 import static com.example.watermelonh.Constants.module;
 import static com.example.watermelonh.Constants.result;
 import static com.example.watermelonh.Constants.resultFront;
+import static com.example.watermelonh.Constants.sideQuality;
+import static com.example.watermelonh.Constants.watermelonModule;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -41,6 +44,9 @@ public class FourthFragment extends Fragment {
         ImageView imageView = (ImageView) view.findViewById(R.id.watermelon_front1);
 
         resultFront = mainActivity.pytorchTensor(imageBitmapFront,module);
+
+        frontQuality = mainActivity.pytorchTensorWatermelon(imageBitmapFront,watermelonModule);
+
 
         imageView.setImageBitmap(imageBitmapFront);
 

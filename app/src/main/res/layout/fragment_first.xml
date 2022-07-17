@@ -5,43 +5,65 @@
     android:id="@+id/side_text"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/bg_grad_list"
     tools:context=".FirstFragment">
 
     <ImageView
         android:id="@+id/mouse"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_marginBottom="411dp"
+        android:layout_width="327dp"
+        android:layout_height="253dp"
+        android:layout_marginBottom="132dp"
         android:scaleType="fitXY"
         android:src="@drawable/ic_launcher_background"
+        app:layout_constraintBottom_toTopOf="@+id/cam_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/cam_button"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/custom_button"
+        android:fontFamily="@font/mukta_semibold"
+        android:text="@string/cam_button_text"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.819"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="1.0" />
+        app:layout_constraintVertical_bias="0.913" />
 
-    <Button
-        android:id="@+id/cam_button"
+    <TextView
+        android:id="@+id/textView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/cam_button_text"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="40dp"
+        android:fontFamily="@font/mukta_semibold"
+        android:text="Tasty Watermelon Identifier v0.5\nHow to use this application: \nTake pictures of your target watermelon\n at angles prompted by the camera app"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.488"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/textView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Side of Watermelon"
-        app:layout_constraintBottom_toBottomOf="@+id/mouse"
+        android:id="@+id/first_frag_melon_description"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="56dp"
+        android:fontFamily="@font/mukta_semibold"
+        android:text="To start, please take a picture of your watermelon from the side, like pictured above"
+        android:textAlignment="center"
+        android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.84"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.325" />
+        app:layout_constraintTop_toBottomOf="@+id/mouse" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -12,6 +12,9 @@
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/WatermelonH/app/src/main/res/layout/title_screen.xml" value="0.358695652173913" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/WatermelonH/app/src/main/res/menu/menu_main.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/Administrator/AndroidStudioProjects/WatermelonH/app/src/main/res/xml/provider_paths.xml" value="0.15" />
+        <entry key="..\:/Users/gdbio/Documents/WatermelonH/app/src/main/res/font/aldrich.xml" value="0.234375" />
+        <entry key="..\:/Users/gdbio/Documents/WatermelonH/app/src/main/res/font/font.xml" value="0.23333333333333334" />
+        <entry key="..\:/Users/gdbio/Documents/WatermelonH/app/src/main/res/font/fonts.xml" value="0.23333333333333334" />
         <entry key="..\:/Users/gdbio/Documents/WatermelonH/app/src/main/res/layout/activity_main.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/gdbio/Documents/WatermelonH/app/src/main/res/layout/activity_upload.xml" value="0.1" />
         <entry key="..\:/Users/gdbio/Documents/WatermelonH/app/src/main/res/layout/content_main.xml" value="0.29118773946360155" />
@@ -23,6 +26,31 @@
         <entry key="..\:/Users/gdbio/Documents/WatermelonH/app/src/main/res/layout/third_fragment.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/gdbio/Documents/WatermelonH/app/src/main/res/menu/menu_main.xml" value="0.20416666666666666" />
         <entry key="..\:/Users/gdbio/Documents/WatermelonH/app/src/main/res/xml/provider_paths.xml" value="0.1" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.567" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/bg_bg.xml" value="0.388" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/bg_grad_2.xml" value="0.284" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/bg_grad_3.xml" value="0.284" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/bg_grad_list.xml" value="0.2835" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/custom_button.xml" value="0.567" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/custom_image_1.xml" value="0.163" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/custom_image_2.xml" value="0.163" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/grad_1.xml" value="0.217" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/grad_2.xml" value="0.217" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/grad_3.xml" value="0.217" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/grad_list.xml" value="0.284" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/drawable/ic_launcher_background.xml" value="0.567" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/font/aldrich.xml" value="0.6046875" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/font/mukta_semibold.xml" value="0.30185185185185187" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/layout/activity_main.xml" value="0.33" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/layout/content_main.xml" value="0.5744791666666667" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/layout/fragment_end.xml" value="0.5" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/layout/fragment_first.xml" value="0.33" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/layout/fragment_fourth.xml" value="0.5744791666666667" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/layout/fragment_second.xml" value="0.1" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/layout/fragment_third.xml" value="0.33" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/menu/menu_main.xml" value="0.5744791666666667" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.567" />
+        <entry key="..\:/gehub/WatermelonH/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.567" />
       </map>
     </option>
   </component>

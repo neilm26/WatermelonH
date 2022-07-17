@@ -43,6 +43,8 @@ public class SecondFragment extends Fragment {
 
         result = mainActivity.pytorchTensor(imageBitmap,module);
 
+        sideQuality = mainActivity.pytorchTensorWatermelon(imageBitmap,watermelonModule);
+
         imageView.setImageBitmap(imageBitmap);
 
         binding.declineImg.setOnClickListener(new View.OnClickListener() {
