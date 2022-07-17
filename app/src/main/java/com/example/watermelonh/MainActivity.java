@@ -44,6 +44,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -251,6 +252,8 @@ public class MainActivity extends AppCompatActivity {
         return com.example.watermelonh.ImageNetClassesFirst.IMAGENET_CLASSES[maxScoreIdx];
     }
 
+
+
     public int pytorchTensorWatermelon(Bitmap bitmap, Module module) {
         // preparing input tensor
         final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
@@ -258,14 +261,18 @@ public class MainActivity extends AppCompatActivity {
 
         // running the model
         //final Tensor outputTensor = (Tensor) module.forward(IValue.from(inputTensor)).toTensor();
+        IValue ivalue = module.forward(IValue.from(inputTensor));
+        IValue[] outputTuple = ivalue.toTuple();
+        final Tensor outputTensor = outputTuple[0].toTensor();
+
 
         // getting tensor content as java array of floats
-        final float[] scores = IValue.from(inputTensor).toTensor().getDataAsFloatArray();
+        final float[] scores = outputTensor.getDataAsFloatArray();
 
         // searching for the index with maximum score
         float maxScore = -Float.MAX_VALUE;
         int maxScoreIdx = -1;
-        for (int i = 0; i < ImageNetClassesMine.IMAGENET_CLASSES.length; i++) {
+        for (int i = 0; i < scores.length; i++) {
             if (scores[i] > maxScore) {
                 maxScore = scores[i];
                 Log.d("score", String.valueOf(maxScore));

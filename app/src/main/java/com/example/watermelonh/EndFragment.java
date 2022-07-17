@@ -54,6 +54,8 @@ public class EndFragment extends Fragment {
             qualityFront.setText(avgValue);
         }
         else {
+            Log.e("ee",result);
+            Log.e("eeee",resultFront);
             qualityFront.setText(notWatermelon);
         }
 
