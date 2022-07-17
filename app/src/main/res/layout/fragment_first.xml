@@ -51,5 +51,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/first_frag_melon_description"
+        android:layout_width="300dp"
+        android:layout_height="60dp"
+        android:layout_marginStart="55dp"
+        android:layout_marginTop="28dp"
+        android:layout_marginEnd="56dp"
+        android:fontFamily="@font/mukta_semibold"
+        android:text="To start, please take a picture of your watermelon from the side, like pictured above"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/mouse" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
