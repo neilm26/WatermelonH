@@ -49,8 +49,6 @@ import java.util.List;
 
 import static com.example.watermelonh.Constants.*;
 
-
-
 //Main app, previous app was to test various functions.
 public class MainActivity extends AppCompatActivity {
 
@@ -85,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
             InputStream imageStreamFront = getAssets().open("watermelon_f.jpg");
             originalBitmapFront = BitmapFactory.decodeStream(imageStreamFront);
 
-            module = LiteModuleLoader.load(assetFilePath(this, "model.pt"));
+            module = LiteModuleLoader.load(assetFilePath(this, "globalmodel.pt"));
+            watermelonModule = LiteModuleLoader.load(assetFilePath(this, "brokmodel.ptl"));
             Log.d("Success,", "Loading model");
 
         } catch (IOException e) {
@@ -237,6 +236,31 @@ public class MainActivity extends AppCompatActivity {
 
         // getting tensor content as java array of floats
         final float[] scores = outputTensor.getDataAsFloatArray();
+
+        // searching for the index with maximum score
+        float maxScore = -Float.MAX_VALUE;
+        int maxScoreIdx = -1;
+        for (int i = 0; i < ImageNetClassesMine.IMAGENET_CLASSES.length; i++) {
+            if (scores[i] > maxScore) {
+                maxScore = scores[i];
+                Log.d("score", String.valueOf(maxScore));
+                maxScoreIdx = i;
+            }
+        }
+
+        return com.example.watermelonh.ImageNetClassesFirst.IMAGENET_CLASSES[maxScoreIdx];
+    }
+
+    public int pytorchTensorWatermelon(Bitmap bitmap, Module module) {
+        // preparing input tensor
+        final Tensor inputTensor = TensorImageUtils.bitmapToFloat32Tensor(bitmap,
+                TensorImageUtils.TORCHVISION_NORM_MEAN_RGB, TensorImageUtils.TORCHVISION_NORM_STD_RGB, MemoryFormat.CHANNELS_LAST);
+
+        // running the model
+        //final Tensor outputTensor = (Tensor) module.forward(IValue.from(inputTensor)).toTensor();
+
+        // getting tensor content as java array of floats
+        final float[] scores = IValue.from(inputTensor).toTensor().getDataAsFloatArray();
 
         // searching for the index with maximum score
         float maxScore = -Float.MAX_VALUE;
